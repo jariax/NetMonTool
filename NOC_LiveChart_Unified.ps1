@@ -5,21 +5,21 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 # CONFIGURATION
 # =====================================================
 $Nodes = @(
-    @{ ID = 1;  NodeName = "NODE_1";  IP = "100.64.0.5"  },
-    @{ ID = 2;  NodeName = "NODE_2";  IP = "100.64.0.6"  },
-    @{ ID = 3;  NodeName = "NODE_3";  IP = "100.64.0.13" },
-    @{ ID = 4;  NodeName = "NODE_4";  IP = "100.64.0.14" },
-    @{ ID = 5;  NodeName = "NODE_5";  IP = "100.64.0.16" },
-    @{ ID = 6;  NodeName = "NODE_6";  IP = "100.64.0.10" },
-    @{ ID = 7;  NodeName = "NODE_7";  IP = "100.64.0.3" },
-    @{ ID = 8;  NodeName = "NODE_8";  IP = "100.64.0.20" },
-    @{ ID = 9;  NodeName = "NODE_9";  IP = "100.64.0.19" },
-    @{ ID = 10; NodeName = "NODE_10"; IP = "100.64.0.11" },
-    @{ ID = 11; NodeName = "NODE_11"; IP = "100.64.0.15" },
-    @{ ID = 12; NodeName = "NODE_12"; IP = "100.64.0.25" },
-    @{ ID = 13; NodeName = "NODE_13"; IP = "100.64.0.17" },
-    @{ ID = 14; NodeName = "NODE_14"; IP = "100.64.0.26" },
-    @{ ID = 15; NodeName = "NODE_15"; IP = "100.64.0.18" }
+    @{ ID = 1;  NodeName = "NODE_1";  IP = "1.1.1.1"  },
+    @{ ID = 2;  NodeName = "NODE_2";  IP = "1.1.1.1"  },
+    @{ ID = 3;  NodeName = "NODE_3";  IP = "1.1.1.1" },
+    @{ ID = 4;  NodeName = "NODE_4";  IP = "1.1.1.1" },
+    @{ ID = 5;  NodeName = "NODE_5";  IP = "1.1.1.1" },
+    @{ ID = 6;  NodeName = "NODE_6";  IP = "1.1.1.1" },
+    @{ ID = 7;  NodeName = "NODE_7";  IP = "1.1.1.1" },
+    @{ ID = 8;  NodeName = "NODE_8";  IP = "1.1.1.1" },
+    @{ ID = 9;  NodeName = "NODE_9";  IP = "8.8.8.8" },
+    @{ ID = 10; NodeName = "NODE_10"; IP = "8.8.8.8" },
+    @{ ID = 11; NodeName = "NODE_11"; IP = "8.8.8.8" },
+    @{ ID = 12; NodeName = "NODE_12"; IP = "8.8.8.8" },
+    @{ ID = 13; NodeName = "NODE_13"; IP = "8.8.8.8" },
+    @{ ID = 14; NodeName = "NODE_14"; IP = "8.8.8.8" },
+    @{ ID = 15; NodeName = "NODE_15"; IP = "8.8.8.8" }
 )
 
 $NodeColors = @{
