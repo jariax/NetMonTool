@@ -23,26 +23,12 @@ Built from operational experience supporting mission-critical networks, includin
 
 ---
 
-## 🖼️ Dashboard Preview
+## 🖼️ Dashborads on display when deploying both scipts
 
 > **Live console output — 5 columns × 3 rows, NOC TV layout**
 
-```
-NOC SINGLE PANE TV DASHBOARD
-Last Refresh: 2025-07-12 14:22:05 | Total: 15 | UP: 11 | WARNING: 1 | DEGRADED: 1 | DOWN: 1 | INIT: 1
+![image alt text](https://github.com/jariax/NetMonTool/blob/main/Screenshot%20of%20aplication%20in%20operation.png?raw=true)
 
-+--------------------------------+    +--------------------------------+    +--------------------------------+
-| NODE_1                         |    | NODE_2                         |    | NODE_3                         |
-| IP     : 192.168.1.1           |    | IP     : 10.0.0.1              |    | IP     : 172.16.0.1            |
-| STATUS : UP                    |    | STATUS : WARNING               |    | STATUS : DOWN                  |
-| CURR   : 12ms                  |    | CURR   : TIMEOUT               |    | CURR   : TIMEOUT               |
-| AVG10  : 11.4ms                |    | AVG10  : 45.2ms                |    | AVG10  : N/A                   |
-| LOSS10 : 0%                    |    | LOSS10 : 10%                   |    | LOSS10 : 100%                  |
-| JITTER : 4ms                   |    | JITTER : 21ms                  |    | JITTER : N/A                   |
-| FAILS  : 0                     |    | FAILS  : 1                     |    | FAILS  : 5                     |
-| LAST OK: 2025-07-12 14:22:04   |    | LAST OK: 2025-07-12 14:20:11   |    | LAST OK: 2025-07-12 14:15:30   |
-+--------------------------------+    +--------------------------------+    +--------------------------------+
-```
 
 > 🟢 **UP** = DarkGreen &nbsp;|&nbsp; 🟡 **WARNING** = DarkYellow &nbsp;|&nbsp; 🟣 **DEGRADED** = DarkMagenta &nbsp;|&nbsp; 🔴 **DOWN** = DarkRed &nbsp;|&nbsp; 🔵 **INIT** = DarkCyan
 
@@ -90,7 +76,6 @@ $Rows          = 3
 $ConsoleWidth  = 200
 $ConsoleHeight = 45
 ```
-
 ---
 
 ## 📊 Status Logic
@@ -132,7 +117,7 @@ This script uses **sequential polling** (one node at a time). This means the act
 
 ---
 
-## ▶️ How to Run
+## ▶️ How to Run - This applies to both scripts, resize to match your screen resolution if nessesary
 
 **Requirements:** Windows with PowerShell 5.1 or later. Run as Administrator for best results.
 
@@ -164,7 +149,7 @@ pwsh -ExecutionPolicy Bypass -File .\NOCMonitorDashboardV3.ps1
 
 ---
 
-## 🔌 Supporting script
+## 🔌 Add-on script - NOC_LiveChart_Unified
 
 ### V1 - Current
 - **Using this script will populate a line chart showing the live latency for each node with a legend**
@@ -183,12 +168,12 @@ pwsh -ExecutionPolicy Bypass -File .\NOCMonitorDashboardV3.ps1
 
 ## 👤 Author
 
-**Julio E. Arias Pabón**
+**Julio E. Arias Pabon**
 Senior Network Engineer | TS/SCI | CCNA | Security+
 
 - 8+ years of network engineering experience across DoD, JSOC, and enterprise environments
-- Specialties: Cisco routing/switching, SATCOM, STIG/RMF, SolarWinds, Splunk, NetBrain
-- Transitioning into cloud networking, cybersecurity, and IT project management
+- Specialties: Cisco routing/switching, SATCOM, STIG/RMF, Splunk, NetBrain, Problem Solver, Root Cause Troubleshooting
+- Tech nerd future Solutions Architect
 
 📧 julioarias1496@gmail.com
 
