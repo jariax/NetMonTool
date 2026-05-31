@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/Language-PowerShell-blue?style=flat-square&logo=powershell" />
   <img src="https://img.shields.io/badge/Platform-Windows-lightgrey?style=flat-square&logo=windows" />
   <img src="https://img.shields.io/badge/Environment-NOC%20%7C%20Enterprise-darkgreen?style=flat-square" />
+  <img src="https://img.shields.io/badge/Version-V3-informational?style=flat-square" />
   <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" />
 </p>
 
@@ -28,7 +29,7 @@ Built from operational experience supporting mission-critical networks, includin
 
 ```
 NOC SINGLE PANE TV DASHBOARD
-Last Refresh: 2025-07-12 14:22:05 | Total: 15 | UP: 12 | WARNING: 1 | DEGRADED: 1 | DOWN: 1 | INIT: 0
+Last Refresh: 2025-07-12 14:22:05 | Total: 15 | UP: 11 | WARNING: 1 | DEGRADED: 1 | DOWN: 1 | INIT: 1
 
 +--------------------------------+    +--------------------------------+    +--------------------------------+
 | NODE_1                         |    | NODE_2                         |    | NODE_3                         |
@@ -43,7 +44,7 @@ Last Refresh: 2025-07-12 14:22:05 | Total: 15 | UP: 12 | WARNING: 1 | DEGRADED: 
 +--------------------------------+    +--------------------------------+    +--------------------------------+
 ```
 
-> 🟢 **UP** = DarkGreen &nbsp;|&nbsp; 🟡 **WARNING / DEGRADED** = DarkYellow &nbsp;|&nbsp; 🔴 **DOWN** = DarkRed &nbsp;|&nbsp; 🔵 **INIT** = DarkCyan
+> 🟢 **UP** = DarkGreen &nbsp;|&nbsp; 🟡 **WARNING** = DarkYellow &nbsp;|&nbsp; 🟣 **DEGRADED** = DarkMagenta &nbsp;|&nbsp; 🔴 **DOWN** = DarkRed &nbsp;|&nbsp; 🔵 **INIT** = DarkCyan
 
 ---
 
@@ -51,8 +52,10 @@ Last Refresh: 2025-07-12 14:22:05 | Total: 15 | UP: 12 | WARNING: 1 | DEGRADED: 
 
 - **Real-time ICMP ping polling** using native .NET `System.Net.NetworkInformation.Ping`
 - **Per-node metrics:** current latency, 10-ping average, packet loss %, jitter, consecutive fail count, last successful ping timestamp
-- **Color-coded status tiles:** UP / WARNING / DEGRADED / DOWN / INIT
+- **Five distinct status states:** UP / WARNING / DEGRADED / DOWN / INIT — each with a unique tile color
+- **Color-coded header bar:** summary counts (UP / WARNING / DEGRADED / DOWN / INIT) rendered in their matching console colors for at-a-glance NOC TV readability
 - **Smart health logic:** status driven by consecutive failures, average latency threshold, and packet loss threshold
+- **Clean N/A handling:** latency and jitter fields display `N/A` (not `N/Ams`) when no data is available yet
 - **NOC TV layout:** configurable columns × rows grid with fixed-width tiles, optimized for wide displays (200 char console width)
 - **Zero dependencies:** pure PowerShell — no modules, no APIs, no installs required
 - **Graceful error handling:** ping timeouts, console resize failures, and unreachable nodes are all handled cleanly
@@ -92,13 +95,15 @@ $ConsoleHeight = 45
 
 ## 📊 Status Logic
 
-| Status | Color | Condition |
-|--------|-------|-----------|
-| `INIT` | 🔵 DarkCyan | Node has not been polled yet |
-| `UP` | 🟢 DarkGreen | Responding, latency and loss within thresholds |
-| `WARNING` | 🟡 DarkYellow | 1–2 consecutive failed pings |
-| `DEGRADED` | 🟡 DarkYellow | High avg latency OR high packet loss, but still responding |
-| `DOWN` | 🔴 DarkRed | ≥ 3 consecutive failed pings (configurable) |
+| Status | Tile Color | Header Color | Condition |
+|--------|------------|--------------|-----------|
+| `INIT` | 🔵 DarkCyan | Cyan | Node has not been polled yet |
+| `UP` | 🟢 DarkGreen | Green | Responding, latency and loss within thresholds |
+| `WARNING` | 🟡 DarkYellow | Yellow | 1–2 consecutive failed pings |
+| `DEGRADED` | 🟣 DarkMagenta | Magenta | High avg latency OR high packet loss, but still responding |
+| `DOWN` | 🔴 DarkRed | Red | ≥ 3 consecutive failed pings (configurable) |
+
+> **V3 update:** DEGRADED now renders in `DarkMagenta` (tile) and `Magenta` (header count), making it visually distinct from WARNING (`DarkYellow`) on a NOC TV display.
 
 ---
 
@@ -136,13 +141,26 @@ This script uses **sequential polling** (one node at a time). This means the act
 
 # Option 2 — From a PowerShell terminal
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\NOCMonitor-SingleWindow.ps1
+.\NOCMonitorDashboardV3.ps1
 
 # Option 3 — From PowerShell 7 (pwsh)
-pwsh -ExecutionPolicy Bypass -File .\NOCMonitor-SingleWindow.ps1
+pwsh -ExecutionPolicy Bypass -File .\NOCMonitorDashboardV3.ps1
 ```
 
 > **Stop monitoring:** Press `CTRL + C` at any time.
+
+---
+
+## 📝 Changelog
+
+### V3 — Current
+- **DEGRADED status now uses `DarkMagenta`** — previously shared `DarkYellow` with WARNING, making the two states visually identical on a NOC TV display
+- **Clean N/A display** — AVG10 and JITTER fields now correctly render `N/A` instead of `N/Ams` before enough ping history is available
+- **Color-coded header summary** — UP / WARNING / DEGRADED / DOWN / INIT counts in the header bar now render in their matching console colors for instant at-a-glance status
+- **Renamed `Draw-Dashboard` → `Write-Dashboard`** — `Draw` is not an approved PowerShell verb; corrected to follow PowerShell naming standards
+
+### V1–V2
+- Initial build: sequential ICMP polling, 5×3 NOC TV grid layout, per-node latency/loss/jitter tracking, color-coded tiles, configurable thresholds
 
 ---
 
@@ -150,7 +168,6 @@ pwsh -ExecutionPolicy Bypass -File .\NOCMonitor-SingleWindow.ps1
 
 - [ ] **Parallel polling** — replace sequential loop with `ForEach-Object -Parallel` (PS 7+) for true fixed-interval monitoring
 - [ ] **Jitter accuracy** — current jitter = (max - min latency); true statistical jitter requires standard deviation calculation
-- [ ] **WARNING / DEGRADED visual distinction** — both currently render DarkYellow; consider DarkMagenta for DEGRADED
 - [ ] **Log to file** — export status history to CSV for post-incident review
 - [ ] **Alert on state change** — email or Teams webhook notification on DOWN transitions
 - [ ] **Dynamic node count** — support larger grids (6×4, 7×3, etc.) via config
