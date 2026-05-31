@@ -17,9 +17,9 @@
 
 ## 📋 Description
 
-**NOC Monitor** is a PowerShell-based, real-time network health dashboard designed for **NOC (Network Operations Center) TV displays**. It provides a clean, color-coded **single pane of glass** view of up to 15 network nodes simultaneously — no third-party software, no GUI framework, no external dependencies.
+**NOC Monitor** is a PowerShell-based, real-time network health dashboard designed for **NOC (Network Operations Center) TV displays**. It provides a clean, color-coded **single pane of glass** view of up to 15 network nodes simultaneously — **no third-party software, no GUI framework, no external dependencies.**
 
-Built from operational experience supporting mission-critical networks, including JSOC and DoD enterprise environments. This tool mirrors the visibility requirements of professional monitoring solutions like SolarWinds or NetBrain, delivered purely through the Windows console.
+Built from operational experience supporting mission-critical networks, including DoD enterprise environments. This tool mirrors the visibility requirements of professional monitoring solutions like SolarWinds, delivered purely through the Windows console.
 
 ---
 
@@ -161,6 +161,13 @@ pwsh -ExecutionPolicy Bypass -File .\NOCMonitorDashboardV3.ps1
 
 ### V1–V2
 - Initial build: sequential ICMP polling, 5×3 NOC TV grid layout, per-node latency/loss/jitter tracking, color-coded tiles, configurable thresholds
+
+---
+
+## 🔌 Supporting script
+
+### V1 - Current
+- **Using this script will populate a line chart showing the live latency for each node with a legend**
 
 ---
 
