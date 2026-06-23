@@ -1,0 +1,9 @@
+# Generated report output — should not be committed
+reports/
+*.write_test.tmp
+
+# Common editor/OS noise
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

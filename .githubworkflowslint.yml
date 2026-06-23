@@ -1,0 +1,53 @@
+name: Lint
+
+# Runs PSScriptAnalyzer on every push and pull request to main.
+# The build fails on Errors; Warnings are reported but do not block,
+# which is the realistic posture for an actively-developed script.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:        # allows manual runs from the Actions tab
+
+jobs:
+  psscriptanalyzer:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+
+      - name: Run analyzer
+        shell: pwsh
+        run: |
+          $settings = Join-Path $PWD 'PSScriptAnalyzerSettings.psd1'
+          $results  = Invoke-ScriptAnalyzer -Path . -Recurse -Settings $settings
+
+          if ($results) {
+              $results | Sort-Object Severity -Descending |
+                  Format-Table Severity, RuleName, ScriptName, Line, Message -AutoSize |
+                  Out-String -Width 200 | Write-Host
+          }
+          else {
+              Write-Host "No findings. Clean run."
+          }
+
+          $errors = @($results | Where-Object Severity -eq 'Error')
+          $warnings = @($results | Where-Object Severity -eq 'Warning')
+
+          Write-Host ""
+          Write-Host "Summary: $($errors.Count) error(s), $($warnings.Count) warning(s)."
+
+          if ($errors.Count -gt 0) {
+              Write-Error "PSScriptAnalyzer reported $($errors.Count) error(s). Failing the build."
+              exit 1
+          }

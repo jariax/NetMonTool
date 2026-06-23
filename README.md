@@ -1,184 +1,190 @@
-<h1 align="center">🖥️ NOC Monitor — Single Pane Dashboard</h1>
+<h1 align="center">🖥️ NetMonTool — NOC Single-Pane Dashboard</h1>
 
 <p align="center">
-  <b>Real-time network health monitoring dashboard built for NOC TV displays</b><br/>
-  <i>Engineered by a Senior Network Engineer with 8+ years of hands-on infrastructure experience</i>
+  <b>Real-time, zero-dependency network monitoring + performance reporting for NOC operations</b><br/>
+  <i>Built in PowerShell by a Senior Network Engineer — runs anywhere Windows does.</i>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Language-PowerShell-blue?style=flat-square&logo=powershell" />
+  <img src="https://img.shields.io/badge/Language-PowerShell%205.1-blue?style=flat-square&logo=powershell" />
   <img src="https://img.shields.io/badge/Platform-Windows-lightgrey?style=flat-square&logo=windows" />
-  <img src="https://img.shields.io/badge/Environment-NOC%20%7C%20Enterprise-darkgreen?style=flat-square" />
-  <img src="https://img.shields.io/badge/Version-V3-informational?style=flat-square" />
-  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" />
+  <img src="https://img.shields.io/badge/Dependencies-None-success?style=flat-square" />
+  <img src="https://img.shields.io/badge/Environment-NOC%20%7C%20CSfC%20%7C%20Enterprise-darkgreen?style=flat-square" />
+  <img src="https://img.shields.io/badge/Version-4.0-informational?style=flat-square" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" />
 </p>
 
 ---
 
-## 📋 Description
+## 📋 Overview
 
-**NOC Monitor** is a PowerShell-based, real-time network health dashboard designed for **NOC (Network Operations Center) TV displays**. It provides a clean, color-coded **single pane of glass** view of up to 15 network nodes simultaneously — **no third-party software, no GUI framework, no external dependencies.**
+**NetMonTool** is a single-file PowerShell tool that turns any Windows console into a live **NOC (Network Operations Center) dashboard** — and now, as of V4, a full **performance reporting engine**.
 
-Built from operational experience supporting mission-critical networks, including DoD enterprise environments. This tool mirrors the visibility requirements of professional monitoring solutions like SolarWinds, delivered purely through the Windows console.
+It monitors up to 15 network nodes in real time, displays a color-coded single pane of glass, and records daily/weekly availability and latency metrics to **CSV files** and the **Windows Event Log** — with **zero external dependencies**. No agents, no licenses, no install. Just PowerShell.
+
+Built from hands-on experience supporting mission-critical and secured (CSfC) networks, it's designed to deliver the visibility you'd expect from enterprise platforms like SolarWinds or PRTG, in environments where those tools aren't available, aren't approved, or aren't in the budget.
 
 ---
 
-## 🖼️ Dashborads on display when deploying both scipts
+## ✨ What's New in V4
+
+V4 is a major release that takes the tool from a live dashboard to a complete monitoring + reporting solution:
+
+- ⚡ **Parallel ping polling** — all nodes are pinged simultaneously via async .NET, giving a true ~5-second refresh regardless of how many nodes are timing out (V3 was sequential and slowed down under failures)
+- 📊 **Daily & weekly CSV reporting** — automatic availability %, drop %, and weighted average latency, share-drive friendly for leadership visibility
+- 📁 **Event timeline logging** — every status change written to a clean, openable incident CSV
+- 🪟 **Windows Event Log integration** — node up/down/degraded events surface in Event Viewer as a backup audit trail
+- 📈 **Live latency line chart** — optional pop-up graph window, one colored line per node
+- 🕒 **Zulu (UTC) time standard** — default for secured/CSfC environments, with a single toggle for local time
+- 💾 **Crash-safe & resumable** — counters reload after a mid-day restart so reporting numbers never reset to zero
+
+> See the full [CHANGELOG](CHANGELOG.md) for the complete V3 → V4 history.
+
+---
+
+## 🖼️ Dashboard Preview
 
 > **Live console output — 5 columns × 3 rows, NOC TV layout**
 
-![image alt text](https://github.com/jariax/NetMonTool/blob/main/Screenshot%20of%20aplication%20in%20operation.png?raw=true)
+```
+NOC SINGLE PANE TV DASHBOARD        Time: 2025-07-12 14:22:05Z
+Files: \\server\share\NOC\reports   EventLog: NOCMonitor
+Total: 15 | UP: 12 | WARNING: 1 | DEGRADED: 1 | DOWN: 1 | INIT: 0
 
++--------------------------------+    +--------------------------------+
+| NODE_1                         |    | NODE_2                         |
+| IP     : 192.168.1.1           |    | IP     : 10.0.0.1              |
+| STATUS : UP                    |    | STATUS : DEGRADED              |
+| CURR   : 12ms                  |    | CURR   : 540ms                 |
+| AVG10  : 11.4ms                |    | AVG10  : 533.0ms               |
+| LOSS10 : 0%                    |    | LOSS10 : 0%                    |
+| JITTER : 4ms                   |    | JITTER : 88ms                  |
+| FAILS  : 0                     |    | FAILS  : 0                     |
+| LAST OK: 2025-07-12 14:22:04Z  |    | LAST OK: 2025-07-12 14:22:01Z  |
++--------------------------------+    +--------------------------------+
+```
 
-> 🟢 **UP** = DarkGreen &nbsp;|&nbsp; 🟡 **WARNING** = DarkYellow &nbsp;|&nbsp; 🟣 **DEGRADED** = DarkMagenta &nbsp;|&nbsp; 🔴 **DOWN** = DarkRed &nbsp;|&nbsp; 🔵 **INIT** = DarkCyan
+> 🟢 **UP** &nbsp;|&nbsp; 🟡 **WARNING** &nbsp;|&nbsp; 🟣 **DEGRADED** &nbsp;|&nbsp; 🔴 **DOWN** &nbsp;|&nbsp; 🔵 **INIT**
 
 ---
 
 ## 🚀 Features
 
-- **Real-time ICMP ping polling** using native .NET `System.Net.NetworkInformation.Ping`
-- **Per-node metrics:** current latency, 10-ping average, packet loss %, jitter, consecutive fail count, last successful ping timestamp
-- **Five distinct status states:** UP / WARNING / DEGRADED / DOWN / INIT — each with a unique tile color
-- **Color-coded header bar:** summary counts (UP / WARNING / DEGRADED / DOWN / INIT) rendered in their matching console colors for at-a-glance NOC TV readability
-- **Smart health logic:** status driven by consecutive failures, average latency threshold, and packet loss threshold
-- **Clean N/A handling:** latency and jitter fields display `N/A` (not `N/Ams`) when no data is available yet
-- **NOC TV layout:** configurable columns × rows grid with fixed-width tiles, optimized for wide displays (200 char console width)
-- **Zero dependencies:** pure PowerShell — no modules, no APIs, no installs required
-- **Graceful error handling:** ping timeouts, console resize failures, and unreachable nodes are all handled cleanly
+| Capability | Detail |
+|------------|--------|
+| **Parallel polling** | `SendPingAsync` fires all nodes at once; batch finishes in ~longest single ping, not the sum |
+| **Per-node metrics** | Current latency, 10-ping average, packet loss %, jitter, consecutive fails, last OK timestamp |
+| **5 status states** | UP / WARNING / DEGRADED / DOWN / INIT — each color-coded |
+| **Daily CSV** | Per-node attempts, successes, failures, drop %, availability %, avg latency |
+| **Weekly CSV** | Tuesday–Monday rollup with correctly *weighted* average latency |
+| **Events CSV** | Incident timeline — one row per status change |
+| **Event Viewer** | Status changes + summaries logged under Applications and Services Logs > NOCMonitor |
+| **Live chart** | Optional WinForms line graph, one color per node, refreshes every 2s |
+| **Zulu time** | UTC-standard reporting by default; toggle `$UseZuluTime = $false` for local |
+| **Crash-safe** | Daily CSV rewritten every cycle; counters reload on restart |
+| **Zero dependencies** | Pure PowerShell 5.1 + native .NET — no modules, no installs |
 
 ---
 
-## ⚙️ Configuration
+## ⚙️ Quick Configuration
 
-All settings are at the top of the script — no editing required beyond this block.
+Everything lives in the clearly-marked config block at the top of the script.
 
 ```powershell
-# ── Node List ──────────────────────────────────────────
+# ── Report Destinations (turn either/both on) ──────────
+$UseZuluTime       = $true      # UTC reporting (recommended for secured envs)
+$EnableFileReports = $true      # daily/weekly/events CSV — no admin needed
+$ReportBasePath    = ""         # "" = ./reports, or a UNC share: \\server\share\NOC
+$EnableEventLog    = $true      # Event Viewer logging — first run needs admin
+$EnableLiveChart   = $true      # pop-up latency graph
+
+# ── Nodes (add/remove freely) ──────────────────────────
 $Nodes = @(
     @{ ID = 1; NodeName = "CORE-RTR-01"; IP = "192.168.1.1" },
     @{ ID = 2; NodeName = "DIST-SW-01";  IP = "10.0.0.1"    },
-    # Add up to 15 nodes (5 cols x 3 rows)
 )
 
 # ── Thresholds ─────────────────────────────────────────
-$FailThreshold        = 3      # Consecutive failures before DOWN
-$LatencyThresholdMs   = 500    # Avg latency above this = DEGRADED
-$LossThresholdPercent = 20     # Packet loss above this = DEGRADED
-
-# ── Polling ────────────────────────────────────────────
-$PingTimeoutMs          = 2500  # Per-ping timeout
-$RefreshIntervalSeconds = 2     # Wait between full cycles
-$HistoryLimit           = 10    # Pings retained for avg/loss calc
-
-# ── Display ────────────────────────────────────────────
-$Columns       = 5
-$Rows          = 3
-$ConsoleWidth  = 200
-$ConsoleHeight = 45
+$FailThreshold          = 3     # consecutive fails before DOWN
+$LatencyThresholdMs     = 500   # AVG10 above this = DEGRADED
+$LossThresholdPercent   = 20    # LOSS10 above this = DEGRADED
+$PingTimeoutMs          = 1500  # replies slower than this count as failure
+$RefreshIntervalSeconds = 5     # target refresh cadence
 ```
+
+---
+
+## ▶️ How to Run
+
+**Requirements:** Windows + PowerShell 5.1. CSV reporting needs **no admin**. Event Log destination needs the **first run as Administrator** to create the custom log (any user afterward).
+
+```powershell
+# Standard run (keeps window open)
+powershell.exe -NoExit -ExecutionPolicy Bypass -File ".\NetMonTool_V4.ps1"
+
+# First-time run WITH Event Log (right-click PowerShell > Run as Administrator)
+powershell.exe -NoExit -ExecutionPolicy Bypass -File ".\NetMonTool_V4.ps1"
+```
+
+> **Stop monitoring:** Press `CTRL + C`. A final report is written to every enabled destination on the way out.
+
 ---
 
 ## 📊 Status Logic
 
-| Status | Tile Color | Header Color | Condition |
-|--------|------------|--------------|-----------|
-| `INIT` | 🔵 DarkCyan | Cyan | Node has not been polled yet |
-| `UP` | 🟢 DarkGreen | Green | Responding, latency and loss within thresholds |
-| `WARNING` | 🟡 DarkYellow | Yellow | 1–2 consecutive failed pings |
-| `DEGRADED` | 🟣 DarkMagenta | Magenta | High avg latency OR high packet loss, but still responding |
-| `DOWN` | 🔴 DarkRed | Red | ≥ 3 consecutive failed pings (configurable) |
-
-> **V3 update:** DEGRADED now renders in `DarkMagenta` (tile) and `Magenta` (header count), making it visually distinct from WARNING (`DarkYellow`) on a NOC TV display.
+| Status | Condition |
+|--------|-----------|
+| `INIT` | Node has not completed its first check |
+| `UP` | Responding; latency and loss within thresholds |
+| `WARNING` | 1–2 consecutive failed pings |
+| `DEGRADED` | Reachable, but AVG10 > latency threshold OR LOSS10 > loss threshold |
+| `DOWN` | ≥ 3 consecutive failed pings (configurable) |
 
 ---
 
-## ⏱️ Polling Behavior — Important Note
+## 📈 Reporting Outputs
 
-This script uses **sequential polling** (one node at a time). This means the actual cycle time depends on how many nodes are unreachable:
-
-| Scenario | Estimated Cycle Time |
-|----------|----------------------|
-| All 15 nodes respond fast | ~2–4 seconds |
-| 1 node times out (2500ms) | ~4–7 seconds |
-| 5 nodes time out | ~15–17 seconds |
-| All 15 nodes time out | ~37–40 seconds |
-
-> 💡 **Roadmap:** Upgrading to parallel polling via `ForEach-Object -Parallel` (PowerShell 7+) or `Start-Job` would guarantee consistent cycle times regardless of timeout count.
-
----
-
-## 🛠️ Technologies Used
-
-| Tool | Purpose |
-|------|---------|
-| **PowerShell 5.1+** | Core scripting language |
-| **System.Net.NetworkInformation.Ping** | Native .NET ICMP ping |
-| **Windows Console API** | `$Host.UI.RawUI` for display control |
-
----
-
-## ▶️ How to Run - This applies to both scripts, resize to match your screen resolution if nessesary
-
-**Requirements:** Windows with PowerShell 5.1 or later. Run as Administrator for best results.
-
-```powershell
-# Option 1 — Right-click the script and select "Run with PowerShell"
-
-# Option 2 — From a PowerShell terminal
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\NOCMonitorDashboardV3.ps1
-
-# Option 3 — From PowerShell 7 (pwsh)
-pwsh -ExecutionPolicy Bypass -File .\NOCMonitorDashboardV3.ps1
+```
+reports/
+├── daily/
+│   └── noc_daily_2025-07-12.csv      # per-node counters, rewritten each cycle
+├── weekly/
+│   └── noc_weekly_2025-07-08.csv     # Tue–Mon rollup, weighted averages
+└── events/
+    └── noc_events_2025-07-12.csv     # incident timeline (status changes)
 ```
 
-> **Stop monitoring:** Press `CTRL + C` at any time.
+**Event Viewer:** `Applications and Services Logs > NOCMonitor`
+Event IDs — `1001` UP · `2001` WARNING · `2002` DEGRADED · `3001` DOWN · `4000/4001` daily snapshot/final · `5001` weekly summary.
 
 ---
 
-## 📝 Changelog
+## 🧠 Architecture
 
-### V3 — Current
-- **DEGRADED status now uses `DarkMagenta`** — previously shared `DarkYellow` with WARNING, making the two states visually identical on a NOC TV display
-- **Clean N/A display** — AVG10 and JITTER fields now correctly render `N/A` instead of `N/Ams` before enough ping history is available
-- **Color-coded header summary** — UP / WARNING / DEGRADED / DOWN / INIT counts in the header bar now render in their matching console colors for instant at-a-glance status
-- **Renamed `Draw-Dashboard` → `Write-Dashboard`** — `Draw` is not an approved PowerShell verb; corrected to follow PowerShell naming standards
+The script is organized into clean layers: a parallel ping engine, a per-node state model (live vs. cumulative), and a reporting dispatcher that fans out to multiple destinations independently.
 
-### V1–V2
-- Initial build: sequential ICMP polling, 5×3 NOC TV grid layout, per-node latency/loss/jitter tracking, color-coded tiles, configurable thresholds
+📐 **Full breakdown in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — covers the async polling model, the dual-destination reporting design, the weighted weekly-average approach, and the Zulu-time funnel.
 
 ---
 
-## 🔌 Add-on script - NOC_LiveChart_Unified
+## 🗺️ Roadmap
 
-### V1 - Current
-- **Using this script will populate a line chart showing the live latency for each node with a legend**
-
----
-
-## 🗺️ Roadmap / Known Limitations
-
-- [ ] **Parallel polling** — replace sequential loop with `ForEach-Object -Parallel` (PS 7+) for true fixed-interval monitoring
-- [ ] **Jitter accuracy** — current jitter = (max - min latency); true statistical jitter requires standard deviation calculation
-- [ ] **Log to file** — export status history to CSV for post-incident review
-- [ ] **Alert on state change** — email or Teams webhook notification on DOWN transitions
-- [ ] **Dynamic node count** — support larger grids (6×4, 7×3, etc.) via config
+- [ ] Distinct WARNING vs DEGRADED tile colors (currently share a palette slot — see CHANGELOG notes)
+- [ ] Approved-verb rename pass (`Draw-`/`Load-`/`Save-` → `Write-`/`Import-`/`Export-`) for full `Get-Verb` compliance
+- [ ] Configurable grid sizes beyond 5×3
+- [ ] Optional email / Teams webhook on DOWN transitions
+- [ ] Jitter-based DEGRADED logic once a latency baseline is established
 
 ---
 
 ## 👤 Author
 
-**Julio E. Arias Pabon**
-Senior Network Engineer | TS/SCI | CCNA | Security+
+**Julio E. Arias Pabón** — Senior Network Engineer | TS/SCI | CCNA | Security+
 
-- 8+ years of network engineering experience across DoD, JSOC, and enterprise environments
-- Specialties: Cisco routing/switching, SATCOM, STIG/RMF, Splunk, NetBrain, Problem Solver, Root Cause Troubleshooting
-- Tech nerd future Solutions Architect
-
-📧 julioarias1496@gmail.com
+Network engineering across DoD, JSOC, and enterprise environments. Transitioning into cloud networking, cybersecurity, and software development. This is part of an ongoing portfolio of practical, field-tested tooling.
 
 ---
 
 ## 📄 License
 
-This project is open for educational and professional portfolio purposes. Feel free to fork, adapt, and build on it — just give credit where it's due.
+Released under the [MIT License](LICENSE). Free to use, fork, and adapt — attribution appreciated.
